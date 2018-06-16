@@ -9,6 +9,7 @@ docutils==0.14
 gensim==3.4.0
 idna==2.6
 jmespath==0.9.3
+jupyter==1.0.0
 https://github.com/LexPredict/lexpredict-lexnlp/archive/0.1.8.zip
 nltk==3.2.4
 num2words==0.5.5
@@ -28,3 +29,4 @@ smart-open==1.5.7
 typing==3.6.2
 Unidecode==0.4.21
 urllib3==1.22
+tika==1.16
