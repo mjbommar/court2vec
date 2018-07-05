@@ -19,9 +19,11 @@ CORPUS_PROPORTION = 0.1
 # Number of workers to use in gensim model building
 NUM_WORKERS = 1
 
+
 def process_text(text):
     stems = [s for s in get_stem_list(text, stopword=True, lowercase=True) if s.isalpha()]
     return stems
+
 
 if __name__ == "__main__":
     # setup key storage
@@ -89,29 +91,31 @@ if __name__ == "__main__":
                         # build word2vec sentence list and doc2vec content simultaneously
                         doc_stems = []
                         for sentence in get_sentence_list(text_content):
-                            sentence_stems = [s for s in get_stem_list(sentence, stopword=True, lowercase=True) if s.isalpha()]
+                            sentence_stems = [s for s in get_stem_list(sentence, stopword=True, lowercase=True) if
+                                              s.isalpha()]
                             doc_stems.extend(sentence_stems)
                             sentences.append(sentence_stems)
-                        documents.append(gensim.models.doc2vec.TaggedDocument(doc_stems, ["{0}".format(court_tar_member.name)]))
+                        documents.append(
+                            gensim.models.doc2vec.TaggedDocument(doc_stems, ["{0}".format(court_tar_member.name)]))
                     except Exception as e:
                         print(e)
-                        
+
     # word2vec models
     min_count = 10
     w2v_size_list = [100, 200]
     w2v_window_list = [5, 10, 20]
     for size in w2v_size_list:
         for window in w2v_window_list:
-            w2v_model_cbow = gensim.models.word2vec.Word2Vec(sentences, size=size, window=window, min_count=min_count, workers=NUM_WORKERS)
+            w2v_model_cbow = gensim.models.word2vec.Word2Vec(sentences, size=size, window=window, min_count=min_count,
+                                                             workers=NUM_WORKERS)
             w2v_model_cbow.save("../data/models/w2v_cbow_all_size{0}_window{1}".format(size, window))
-            
+
     # doc2vec models
     min_count = 10
     d2v_size_list = [100, 200]
     d2v_window_list = [5, 10, 20]
     for size in d2v_size_list:
         for window in d2v_window_list:
-            d2v_model = gensim.models.doc2vec.Doc2Vec(documents, vector_size=size, window=window, min_count=min_count, workers=NUM_WORKERS)
+            d2v_model = gensim.models.doc2vec.Doc2Vec(documents, vector_size=size, window=window, min_count=min_count,
+                                                      workers=NUM_WORKERS)
             d2v_model.save("../data/models/d2v_all_size{0}_window{1}".format(size, window))
-
-    
