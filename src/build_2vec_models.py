@@ -11,10 +11,10 @@ from lexnlp.nlp.en.segments.sentences import get_sentence_list
 from lexnlp.nlp.en.tokens import get_token_list, get_stem_list
 
 # Setup input
-TAR_FILE_PATH = "../data/opinions/all.tar"
+TAR_FILE_PATH = "data/opinions/all.tar"
 
 # Proportion of each jurisdiction tar file to include in sample (selected randomly)
-CORPUS_PROPORTION = 0.1
+CORPUS_PROPORTION = 0.05
 
 # Number of workers to use in gensim model building
 NUM_WORKERS = 1
@@ -48,8 +48,14 @@ if __name__ == "__main__":
                 court_member_list = court_tar_file.getmembers()
                 court_num_members = len(court_member_list)
                 court_sample_size = int(court_num_members * CORPUS_PROPORTION)
-                if court_sample_size > 0:
-                    court_sample_list = numpy.random.choice(court_member_list, court_sample_size)
+                if court_sample_size > 0 and CORPUS_PROPORTION < 1.0:
+                    # sample randomly
+                    court_random_sample_list = numpy.random.choice(court_member_list, court_sample_size)
+                    
+                    # effectively resort in seek order for tar
+                    court_sample_list = [member for member in court_member_list if member in court_random_sample_list]
+                elif CORPUS_PROPORTION == 1.0:
+                    court_sample_list = court_member_list
                 else:
                     continue
 
@@ -108,7 +114,7 @@ if __name__ == "__main__":
         for window in w2v_window_list:
             w2v_model_cbow = gensim.models.word2vec.Word2Vec(sentences, size=size, window=window, min_count=min_count,
                                                              workers=NUM_WORKERS)
-            w2v_model_cbow.save("../data/models/w2v_cbow_all_size{0}_window{1}".format(size, window))
+            w2v_model_cbow.save("data/models/w2v_cbow_all_size{0}_window{1}".format(size, window))
 
     # doc2vec models
     min_count = 10
@@ -118,4 +124,4 @@ if __name__ == "__main__":
         for window in d2v_window_list:
             d2v_model = gensim.models.doc2vec.Doc2Vec(documents, vector_size=size, window=window, min_count=min_count,
                                                       workers=NUM_WORKERS)
-            d2v_model.save("../data/models/d2v_all_size{0}_window{1}".format(size, window))
+            d2v_model.save("data/models/d2v_all_size{0}_window{1}".format(size, window))
