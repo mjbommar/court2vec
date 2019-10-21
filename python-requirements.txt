@@ -11,7 +11,7 @@ idna==2.6
 jmespath==0.9.3
 jupyter==1.0.0
 https://github.com/LexPredict/lexpredict-lexnlp/archive/0.1.8.zip
-nltk==3.2.4
+nltk==3.4.5
 num2words==0.5.5
 numpy==1.14.5
 pandas==0.21.0
